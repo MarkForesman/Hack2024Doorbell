@@ -13,4 +13,4 @@ to be added
 
 ## Setup
 
-- to setup you need to copy the .env.template fiie to .env and add connection string
+- To setup you need to copy the .env.template fiie to .env and add connection string
