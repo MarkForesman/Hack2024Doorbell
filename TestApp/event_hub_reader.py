@@ -1,49 +1,48 @@
 from azure.eventhub import EventHubConsumerClient
 
-# Define connection parameters
+# Replace these with your actual Event Hub details
 connection_str = 'Endpoint=sb://iothub-ns-doorbellhu-62180401-c50c8fa2da.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=EEc8xYmwo/uXLABv2NKot0qOrWg5d/J7hAIoTPjoWXg=;EntityPath=doorbellhub'
-eventhub_name = 'doorbell'
-consumer_group = '$Default'  # Default consumer group; replace if needed
+consumer_group = '$Default'  # Replace with your consumer group if different
+eventhub_name = 'doorbellhub'  # The name of your Event Hub
 
-# Define a callback function to process incoming events
 def on_event(partition_context, event):
-    print("Received event:")
-    print("Partition: ", partition_context.partition_id)
-    print("Event Data: ", event.body_as_str())
-    print("Sequence Number: ", event.sequence_number)
-    print("Offset: ", event.offset)
-    print("Enqueued Time: ", event.enqueued_time)
+    # Called when an event is received
+    print("Received event from partition: {}.".format(partition_context.partition_id))
+    print("Event data: {}".format(event.body_as_str()))
+    # You can also use event.metadata for more information if needed
 
-# Define a callback function for error handling
 def on_error(partition_context, error):
-    print("Error occurred: ", error)
+    # Called when an error occurs
+    print("Error occurred: {}".format(error))
 
-# Create a consumer client
+def on_partition_initialize(partition_context):
+    # Called when a partition is initialized
+    print("Partition initialized: {}".format(partition_context.partition_id))
+
+def on_partition_close(partition_context, reason):
+    # Called when a partition is closed
+    print("Partition closed: {}. Reason: {}".format(partition_context.partition_id, reason))
+
+# Create a consumer client for the Event Hub
 client = EventHubConsumerClient.from_connection_string(
     connection_str,
-    consumer_group,
-    eventhub_name=eventhub_name
+    consumer_group=consumer_group
 )
 
-# Start receiving messages
-with client:
-    # Create a receiver for all partitions
-    try:
-        # Start receiving messages from the Event Hub
-        # This will call `on_event` whenever a message is received
+try:
+    # Start receiving messages
+    with client:
         client.receive(
             on_event=on_event,
             on_error=on_error,
+            on_partition_initialize=on_partition_initialize,
+            on_partition_close=on_partition_close,
             consumer_group=consumer_group,
-            starting_position="-1"  # Start receiving from the beginning of the partition
+            starting_position="@latest",  # Change to "@earliest" if you want to read from the beginning
+            eventhub_name=eventhub_name
         )
-
-        # Keep the script running to keep receiving messages
-        print("Receiving messages. Press Ctrl+C to exit.")
-        client._running_event.wait()  # Block until Ctrl+C is pressed
-
-    except KeyboardInterrupt:
-        print("Receiving stopped by user.")
-    finally:
-        # Close the client
-        client.close()
+except KeyboardInterrupt:
+    print("Receiving has been stopped.")
+finally:
+    # Close the client
+    client.close()
