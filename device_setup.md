@@ -68,11 +68,7 @@ Optional nice to have shell configuration
 ```sh
 # Install K9s
 
-
 curl -sS https://webi.sh/k9s | sh
-
-
-
 
 # Add flux autocomplete to bash
 
