@@ -1,8 +1,13 @@
 from azure.iot.device import IoTHubDeviceClient, Message
 import time
 
+import os
+from dotenv import load_dotenv
+load_dotenv(override=True)
+
+
 # Define connection string for your device
-connection_string = 'HostName=DoorbellHub.azure-devices.net;DeviceId=markPc;SharedAccessKey=kxB/2Q0HdWQCiT009mrXcArQrX0faB4ZcAIoTBNXR6o='
+connection_string = os.getenv("DEVICE_CONNECTION_STRING")
 
 # Create an IoT Hub client instance
 client = IoTHubDeviceClient.create_from_connection_string(connection_string)
