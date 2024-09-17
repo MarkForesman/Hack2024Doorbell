@@ -154,6 +154,12 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Azurite
+__azurite_db_blob__.json
+__azurite_db_blob_extent__.json
+__azurite_db_queue_extent__.json
+__azurite_db_queue__.json
+
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
