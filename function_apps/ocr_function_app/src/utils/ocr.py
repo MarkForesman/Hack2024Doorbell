@@ -1,5 +1,6 @@
 from azure.ai.formrecognizer import AnalyzeResult
 from azure.ai.formrecognizer import DocumentAnalysisClient
+import logging
 
 def document_intelligence_ocr(document_analysis_client: DocumentAnalysisClient, image_url: str):
     """Calls a Document Intelligence Azure Service to OCR a given image by URL.
@@ -16,19 +17,13 @@ def document_intelligence_ocr(document_analysis_client: DocumentAnalysisClient, 
     poller = document_analysis_client.begin_analyze_document_from_url(model_id="prebuilt-read", document_url=document_url)
     result: AnalyzeResult = poller.result()
 
-    if result.styles and any([style.is_handwritten for style in result.styles]):
-        print("Document contains handwritten content")
-    else:
-        print("Document does not contain handwritten content")
-
     for page in result.pages:
-        print(f"----Analyzing layout from page #{page.page_number}----")
-        print(f"Page has width: {page.width} and height: {page.height}, measured with unit: {page.unit}")
+        logging.info(f"----Analyzing layout from page #{page.page_number}----")
+        logging.info(f"Page has width: {page.width} and height: {page.height}, measured with unit: {page.unit}")
 
     ocr_result = ""
     if result.paragraphs:
         for paragraph in result.paragraphs:
             ocr_result += paragraph.content
-        print(ocr_result)
 
     return ocr_result
