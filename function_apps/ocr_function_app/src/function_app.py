@@ -43,7 +43,7 @@ def package_notifier(msg: func.QueueMessage) -> None:
     employees = Employees(**json.loads(json_data))
 
     names = [employee.name for employee in employees.employees]
-    shipping_label = document_intelligence_ocr(document_analysis_client=document_intelligence_client, image_url=f"")
+    shipping_label = document_intelligence_ocr(document_analysis_client=document_intelligence_client, image_url=f"") # TODO: Add logic to extract file name and build url
     fuzzy_result = extract_name_from_label(shipping_label=shipping_label, employee_list=names)
     if fuzzy_result is None:
         # TODO: Add logic to handle when it's None
