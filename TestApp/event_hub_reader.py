@@ -1,7 +1,11 @@
 from azure.eventhub import EventHubConsumerClient
+import os
+from dotenv import load_dotenv
+load_dotenv(override=True)
 
 # Replace these with your actual Event Hub details
-connection_str = 'Endpoint=sb://iothub-ns-doorbellhu-62180401-c50c8fa2da.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=EEc8xYmwo/uXLABv2NKot0qOrWg5d/J7hAIoTPjoWXg=;EntityPath=doorbellhub'
+connection_str = os.getenv("CONNECTION_STRING")
+
 consumer_group = '$Default'  # Replace with your consumer group if different
 eventhub_name = 'doorbellhub'  # The name of your Event Hub
 

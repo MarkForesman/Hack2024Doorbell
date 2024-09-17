@@ -13,6 +13,8 @@ import pprint
 from azure.storage.blob import BlobClient
 from azure.core.exceptions import ResourceExistsError
 import logging
+from dotenv import load_dotenv
+load_dotenv(override=True)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -40,7 +42,7 @@ You can learn more about File Upload with IoT Hub here:
 https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-file-upload
 
 """
-IOTHUB_DEVICE_CONNECTION_STRING = os.getenv("IOTHUB_DEVICE_CONNECTION_STRING")
+IOTHUB_DEVICE_CONNECTION_STRING = os.getenv("IOT_CONNECTION_STRING")
 
 
 async def upload_via_storage_blob(blob_info, file_name):
