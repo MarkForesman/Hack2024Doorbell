@@ -43,7 +43,7 @@ def package_notifier(msg: func.QueueMessage) -> None:
     employees = Employees(**json.loads(json_data))
 
     names = [employee.name for employee in employees.employees]
-    shipping_label = document_intelligence_ocr(document_analysis_client=document_intelligence_client, image_url=f"https://rgiaidoorbell.blob.core.windows.net/sampleimages/jose_rod.jpg?sp=r&st=2024-09-17T23:26:40Z&se=2024-09-18T07:26:40Z&spr=https&sv=2022-11-02&sr=b&sig=%2F801hZYnjuFPDNDqDGqDjNp9uIYUoj8K2MxE8JQQeSU%3D")
+    shipping_label = document_intelligence_ocr(document_analysis_client=document_intelligence_client, image_url=f"")
     fuzzy_result = extract_name_from_label(shipping_label=shipping_label, employee_list=names)
     if fuzzy_result is None:
         # TODO: Add logic to handle when it's None
