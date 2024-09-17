@@ -160,6 +160,9 @@ __azurite_db_blob_extent__.json
 __azurite_db_queue_extent__.json
 __azurite_db_queue__.json
 
+__queuestorage__/
+__blobstorage__
+
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
