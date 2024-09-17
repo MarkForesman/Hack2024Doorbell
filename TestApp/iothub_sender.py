@@ -4,14 +4,14 @@ from azure.iot.device import IoTHubDeviceClient, Message
 import time
 
 # Define connection string for your device
-connection_string = 'HostName=DoorbellHub.azure-devices.net;DeviceId=106;SharedAccessKey=l0wcHhBsiW0+6ksma2NDJ891L6yGwv+ULAIoTEmILfk='
+connection_string = ''
 
 # Create an IoT Hub client instance
 client = IoTHubDeviceClient.create_from_connection_string(connection_string)
 
 def send_message(client):
     # Create a message to send
-    message = Message("Hello, IoT Hub!")
+    message = Message('{"Button": 1, "DeviceType":"Doorbell", "DeviceId": "107", "Metadata": ""}')
     message.content_encoding = "utf-8"
     message.content_type = "application/json"
     
