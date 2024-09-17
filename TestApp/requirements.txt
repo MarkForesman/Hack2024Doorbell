@@ -1,4 +1,4 @@
 azure-eventhub==5.12.1
-RPi.GPIO
+rpi.gpio
 
 

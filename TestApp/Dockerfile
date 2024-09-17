@@ -1,9 +1,8 @@
 # Use the official Python image from the Docker Hub
-FROM python:3.11-slim
-
+FROM arm64v8/python:3.12.6-bookworm
 # Set environment variables to prevent Python from writing .pyc files and to ensure output is sent straight to the terminal
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+#ENV PYTHONDONTWRITEBYTECODE=1
+#ENV PYTHONUNBUFFERED=1
 
 # Set the working directory in the container
 WORKDIR /app
