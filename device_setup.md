@@ -28,18 +28,19 @@ flux install
 
 # Configure flux with github repository
 
+DEVICE_NAME="device-104"
+
 flux create source git doorbell \
   --url=https://github.com/MarkForesman/Hack2024Doorbell.git \
   --branch=main \
   --interval=1m 
 
 flux create kustomization podinfo \
-  --target-namespace=default \
   --source=doorbell \
-  --path="./gitops/clusters/device-104" \
+  --path="./gitops/clusters/$DEVICE_NAME" \
   --prune=true \
   --wait=true \
-  --interval=30m \
+  --interval=1m \
   --retry-interval=2m \
   --health-check-timeout=3m 
 
@@ -56,10 +57,14 @@ helm repo add external-secrets https://charts.external-secrets.io
     --create-namespace \
     --set installCRDs=true
 
+export SP_CLIENT_ID="client-id"
+export SP_CLIENT_SECRET="client-secret"
+
+
 # Create Kubernetes Secrets for the ESO to access the Key Vault
 kubectl create secret -n external-secrets generic azkv-secret \
-    --from-literal=ClientID='${EDGE_DEVICE_SP_CLIENT_ID}' \
-    --from-literal=ClientSecret='${EDGE_DEVICE_SP_SECRET}'
+  --from-literal=ClientID="$SP_CLIENT_ID" \
+  --from-literal=ClientSecret="$SP_CLIENT_SECRET"
 
 ```
 
