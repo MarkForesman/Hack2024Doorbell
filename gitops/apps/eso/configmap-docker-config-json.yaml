@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docker-config-json
+data:
+  .dockerconfigjson: |
+    {"auths":
+      {"acrdoorbell.azurecr.io":
+        {
+          "username":"{{ .dockerUsername | toString }}",
+          "password":"{{ .dockerPassword | toString }}"
+        }
+      }
+    }
