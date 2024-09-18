@@ -1,5 +1,5 @@
 resources:
   - namespace.yaml
-  - manifest.yaml
+  - deployment.yaml
 
 namespace: workloads

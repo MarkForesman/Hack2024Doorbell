@@ -1,0 +1,31 @@
+kind: Deployment
+apiVersion: apps/v1
+
+metadata:
+  name: camera-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: camera-app
+  template:
+    metadata:
+      labels:
+        app: camera-app
+    spec:
+      containers:
+        - name: sample-ml-workload-container
+          securityContext:
+            privileged: true
+          image: acrdoorbell.azurecr.io/testapp2:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /dev/
+              name: devDirectory
+              readOnly: true
+      volumes:
+        - name: devDirectory
+          hostPath:
+            path: /dev/
+      imagePullSecrets:
+        - name: acr-pull
