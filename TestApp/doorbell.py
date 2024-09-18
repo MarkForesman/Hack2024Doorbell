@@ -143,6 +143,9 @@ iothub = IoTHub()
 if device_mode == "Signaler":
     from signaler import Signaler
     device = Signaler(iothub, updateColor)
+elif device_mode == "Scanner":
+    from scanner import Scanner
+    device = Scanner(iothub, updateColor)
 
 
 button1.when_pressed = device.button_1_press
