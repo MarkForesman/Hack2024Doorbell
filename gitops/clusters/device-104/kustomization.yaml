@@ -1,2 +1,3 @@
 resources:
   - ./../../apps/test_app
+  - ./../../apps/eso
