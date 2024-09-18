@@ -1,9 +1,9 @@
 import azure.functions as func
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
-from utils.ocr import document_intelligence_ocr
+from services.ocr_service import document_intelligence_ocr
 from utils.fuzzy_search import extract_name_from_label
-from services.blob_downloader import download_blob_to_string
+from services.blob_downloader_service import download_blob_to_string
 from services.email_service import send_email_service
 from models.employee import Employees
 import logging
@@ -54,4 +54,4 @@ def package_notifier(msg: func.QueueMessage) -> None:
         pass
     found_employee = employees.find_employee_by_name(fuzzy_result)
     print(found_employee.name)
-    send_email_service(connection_string=email_connection_string, sender_address=sender_address, employee=found_employee, image_url="") # TODO: Add image url
+    # send_email_service(connection_string=email_connection_string, sender_address=sender_address, employee=found_employee, image_url="") # TODO: Add image url
