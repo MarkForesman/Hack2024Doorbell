@@ -17,15 +17,25 @@ spec:
         - name: sample-ml-workload-container
           securityContext:
             privileged: true
+          env:
+            - name: LD_LIBRARY_PATH
+              value: /opt/vc/lib
           image: acrdoorbell.azurecr.io/testapp2:latest
           imagePullPolicy: Always
           volumeMounts:
             - mountPath: /dev/
               name: devDirectory
               readOnly: true
+            - name: udev
+              mountPath: /run/udev
+              readOnly: true
       volumes:
         - name: devDirectory
           hostPath:
             path: /dev/
+        - name: udev
+          hostPath:
+            path: /run/udev
+            
       imagePullSecrets:
         - name: acr-pull
