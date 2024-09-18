@@ -14,8 +14,8 @@
 
 This function app is apart of the Doorbell hack
 
-This serves as the optical character recognition
-and email notification service when a message is received in a queue. The expected message
+This serves as the optical character recognition and email notification
+service when a message is received in a queue. The expected message
 that this function app receives contains data about a shipping label and device id and extracts
 this information to automatically email an employee when a package has been received.
 
@@ -36,8 +36,27 @@ Once these are deployed, you will have to configure some of the services.
 1. Azure Email Communication Service
    - You will have to provision a domain (see [this documentation](https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/connect-email-communication-resource?pivots=azure-portal) for more information)
 2. Azure Storage Account
-   - You will have to create a container that houses the JSON configuration [file](employees.jsonc).
-   - This file contains the "source of truth" of employees and is what is used to compare against the OCR. 
+   - Create a container that houses the JSON configuration [file](employees.json) (default container name is `config`).
+     - This file contains the "source of truth" of employees and is what is used to compare against the OCR.
+   - Create a container for shipping labels, (default container name is `packagelabels`)
+   - Create a storage queue (default queue name is packagelabels)
+3. The Azure Function relies on a specific type of queue message
+
+Sample queue message
+
+```json
+{
+  "TimeStamp":"2024-09-18T17:35:11.869781Z",
+  "Type":"PackageLabelScanEvent",
+  "Payload":{
+    "DeviceId":"107",
+    "Path":"mark_foresman_good.jpg",
+    "Type":"PackageLabelScanEvent"
+    }
+}
+
+Make sure to follow this format.
+```
 
 | Variable Name                                   | Description                                      |
 |------------------------------------------------|--------------------------------------------------|
