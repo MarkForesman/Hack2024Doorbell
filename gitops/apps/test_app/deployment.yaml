@@ -19,13 +19,13 @@ spec:
             privileged: true
           image: acrdoorbell.azurecr.io/testapp2:latest
           imagePullPolicy: Always
-          # volumeMounts:
-          # - mountPath: /dev/
-          #   name: dev-directory
-          #   readOnly: true
-      # volumes:
-      #   - name: dev-directory
-      #     hostPath:
-      #       path: /dev/
+          volumeMounts:
+            - mountPath: /dev
+              name: dev-directory
+              readOnly: true
+      volumes:
+        - name: dev-directory
+          hostPath:
+            path: /dev
       imagePullSecrets:
         - name: acr-pull
