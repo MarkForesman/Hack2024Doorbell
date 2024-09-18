@@ -74,12 +74,7 @@ async def upload_via_storage_blob(blob_info, file_name):
     return result
 
 
-async def main():
-    file_name=sys.argv[1]
-    conn_str = IOTHUB_DEVICE_CONNECTION_STRING
-    device_client = IoTHubDeviceClient.create_from_connection_string(conn_str)    
-    # Connect the client.
-    await device_client.connect()
+async def upload_blob_file(file_name: str, device_client: IoTHubDeviceClient):
 
     # get the Storage SAS information from IoT Hub.
     storage_info = await device_client.get_storage_info_for_blob(file_name)
