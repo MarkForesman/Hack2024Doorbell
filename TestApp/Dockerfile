@@ -16,7 +16,8 @@ RUN apt update && apt install -y --no-install-recommends \
      && apt-get autoremove \
      && rm -rf /var/cache/apt/archives/* \
      && rm -rf /var/lib/apt/lists/*
-
+     
+ENV PYTHONUNBUFFERED=1
 # ------------------------------------------------------------------------------------------------
 # Build and run application
 # ------------------------------------------------------------------------------------------------

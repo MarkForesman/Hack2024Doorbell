@@ -34,7 +34,7 @@ flux create source git doorbell \
   --url=https://github.com/MarkForesman/Hack2024Doorbell.git \
   --branch=main \
   --interval=1m 
-
+------------------------------------------------------------------------------------------------
 flux create kustomization podinfo \
   --source=doorbell \
   --path="./gitops/clusters/$DEVICE_NAME" \
@@ -43,7 +43,7 @@ flux create kustomization podinfo \
   --interval=1m \
   --retry-interval=2m \
   --health-check-timeout=3m 
-
+------------------------------------------------------------------------------------------------
 # Install Helm
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
@@ -57,12 +57,12 @@ helm repo add external-secrets https://charts.external-secrets.io
     --create-namespace \
     --set installCRDs=true
 
-export SP_CLIENT_ID="client-id"
-export SP_CLIENT_SECRET="client-secret"
+export SP_CLIENT_ID="client_id"
+export SP_CLIENT_SECRET="secret"
 
 
 # Create Kubernetes Secrets for the ESO to access the Key Vault
-kubectl create secret -n external-secrets generic azkv-secret \
+sudo kubectl create secret -n external-secrets generic azkv-secret \
   --from-literal=ClientID="$SP_CLIENT_ID" \
   --from-literal=ClientSecret="$SP_CLIENT_SECRET"
 

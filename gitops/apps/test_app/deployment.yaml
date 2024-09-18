@@ -17,6 +17,7 @@ spec:
         - name: camera-app-container
           securityContext:
             privileged: true
+          command:["python3","-u", "/app/test_3.py"]
           env:
             - name: LD_LIBRARY_PATH
               value: /opt/vc/lib
