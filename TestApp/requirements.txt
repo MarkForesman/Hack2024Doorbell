@@ -1,2 +1,5 @@
 azure-eventhub
+rpi.gpio
+python-dotenv
+pydantic
 
