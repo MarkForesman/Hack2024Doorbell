@@ -1,6 +1,8 @@
 import json
 from events import *
+
 class Signaler:
+    light_reset = 60
     def __init__(self, iothub, update_color):
         self.iothub = iothub
         self.update_color = update_color
@@ -8,7 +10,6 @@ class Signaler:
 
     def button_1_press(self):
         print("Button 1 pressed")
-        #change from doorbell or siganler later
         event=self.generate_button_event(1)
         event_json=event.model_dump_json()
         print(event_json)
@@ -30,13 +31,14 @@ class Signaler:
         msg = json.loads(message.data.decode("utf-8"))
         msgType = msg.get("Type")
         if  msgType == "PackageArrivedEvent":
-             event = PackageArrivedEvent(**msg)
-             print(f"Package arrived event received: {event}")
-             self.update_color(1, 0, 1, 0)
-        # else if "PackagePickerConfirmedEvent" in message:
-        #     event = PackagePickerConfirmedEvent.model_validate_json(message)
-        #     print(f"Package picker confirmed event received: {event}")
-        #     #self.update_color(1, 0, 1, 0)
+            event = PackageArrivedEvent(**msg)
+            print(f"Package arrived event received: {event}")
+            led_target = 1 if event.Payload.Location=="Front door" else 2
+            self.update_color(led_target, 1, 0, 0, Signaler.light_reset)
+        elif msgType == "PackagePickerConfirmedEvent":
+             event = PackagePickerConfirmedEvent(**msg)
+             led_target = 1 if event.Payload.Location=="Front door" else 2
+             self.update_color(led_target, 0, 1, 0, Signaler.light_reset)
         else:
             print("Unknown message received")
 
