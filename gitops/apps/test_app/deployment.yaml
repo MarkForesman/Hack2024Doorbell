@@ -23,16 +23,10 @@ spec:
           image: acrdoorbell.azurecr.io/testapp2:latest
           imagePullPolicy: Always
           volumeMounts:
-            - mountPath: /dev
-              name: dev-directory
-              readOnly: true
             - name: udev
               mountPath: /run/udev
               readOnly: true
       volumes:
-        - name: dev-directory
-          hostPath:
-            path: /dev
         - name: udev
           hostPath:
             path: /run/udev
