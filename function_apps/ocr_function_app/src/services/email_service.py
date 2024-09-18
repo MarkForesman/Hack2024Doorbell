@@ -1,11 +1,17 @@
 from azure.communication.email import EmailClient
+from models.employee import Employee
 import logging
-from dotenv import load_dotenv
-import os
 
-load_dotenv(override=True)
+def send_email_service(connection_string:str, sender_address: str, employee: Employee, image_url: str) -> None:
+    """Connects to a Communication Service service and sends an email.
 
-def email_service(connection_string:str, sender_address: str, receiver_address: str, receiver_name: str):
+    Args:
+        connection_string (str): Connection string of the Communication Service.
+        sender_address (str): Sender address that was configured within the Communication Service.
+        employee (Employee): Employee object that contains the name and email address of an employee.
+        image_url (str): Image URL of the label to append to the message of the email.
+    """
+    
     try:
         client = EmailClient.from_connection_string(connection_string)
 
@@ -13,7 +19,7 @@ def email_service(connection_string:str, sender_address: str, receiver_address: 
         "senderAddress": sender_address,
         "recipients": {
             "to": [
-                {"address": receiver_address}
+                {"address": employee.email_address}
             ]
         },
         "content": {
@@ -21,18 +27,15 @@ def email_service(connection_string:str, sender_address: str, receiver_address: 
             "html": f"""
                 <html>
                     <body>
-                        <p>Hello {receiver_name}! A package has arrived for you.</p>
-                        <img src="https://previews.123rf.com/images/aquir/aquir1311/aquir131100316/23569861-sample-grunge-red-round-stamp.jpg" alt="Image Description" />
+                        <p>Hello {employee.name}! A package has arrived for you.</p>
+                        <img src="{image_url}" alt="Image Description" />
                     </body>
                 </html>
             """
         }
     }
 
-        poller = client.begin_send(message)
-        result = poller.result()
+        client.begin_send(message)
 
     except Exception as ex:
         logging.error(ex)
-
-email_service(connection_string=os.environ["EMAIL_COMMUNICATION_CONNECTION_STRING"], sender_address=os.environ["COMMUNICATION_SENDER_ADDRESS"], receiver_address="connorwehrum@microsoft.com")

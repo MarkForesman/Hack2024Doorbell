@@ -3,7 +3,8 @@ from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 from utils.ocr import document_intelligence_ocr
 from utils.fuzzy_search import extract_name_from_label
-from function_apps.ocr_function_app.src.services.blob_downloader import download_blob_to_string
+from services.blob_downloader import download_blob_to_string
+from services.email_service import send_email_service
 from models.employee import Employees
 import logging
 import os
@@ -16,7 +17,7 @@ di_endpoint = os.environ["DOCUMENT_INTELLIGENCE_ENDPOINT"]
 di_key = os.environ["DOCUMENT_INTELLIGENCE_API_KEY"]
 blob_connection_string = os.environ["STORAGE_ACCOUNT_CONNECTION_STRING"]
 blob_container_name = os.environ["STORAGE_CONTAINER_NAME"]
-connection_string=os.environ["EMAIL_COMMUNICATION_CONNECTION_STRING"]
+email_connection_string=os.environ["EMAIL_COMMUNICATION_CONNECTION_STRING"]
 sender_address=os.environ["COMMUNICATION_SENDER_ADDRESS"]
 
 # Clients
@@ -52,4 +53,5 @@ def package_notifier(msg: func.QueueMessage) -> None:
         print("It's None")
         pass
     found_employee = employees.find_employee_by_name(fuzzy_result)
-    print(f"It's a match! {found_employee}")
+    print(found_employee.name)
+    send_email_service(connection_string=email_connection_string, sender_address=sender_address, employee=found_employee, image_url="") # TODO: Add image url

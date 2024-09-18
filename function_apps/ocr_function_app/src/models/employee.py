@@ -3,7 +3,7 @@ from typing import Optional
 
 class Employee(BaseModel):
     name: str
-    alias: str
+    email_address: str
 
 class Employees(BaseModel):
     employees: list[Employee]
