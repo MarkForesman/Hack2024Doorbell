@@ -73,7 +73,7 @@ def package_notifier(msg: func.QueueMessage) -> None:
             print("It's None")
             pass
         found_employee = employees.find_employee_by_name(fuzzy_result)
-        # send_email_service(connection_string=email_connection_string, sender_address=sender_address, employee=found_employee, image_url=blob_url) # TODO: Add image url
+        send_email_service(connection_string=email_connection_string, sender_address=sender_address, employee=found_employee, image_url=blob_url) # TODO: Add image url
     else:
         logging.error(f"Event: {event.Type} is not a valid event!")
         raise NotImplementedError()
