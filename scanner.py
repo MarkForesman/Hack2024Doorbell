@@ -4,6 +4,8 @@ from picamera2 import Picamera2
 import time
 import subprocess
 import uuid
+import os
+import time
 
 # Initialize the camera
 camera = Picamera2()
@@ -17,22 +19,31 @@ class Scanner:
         self.update_color = update_color
 
     def button_1_press(self):
+        guid_filename = f"{uuid.uuid4()}.jpg"
         print("Button 1 pressed")
-        camera.capture_file('image1.jpg')
+        camera.capture_file(guid_filename)
+        self.update_color(1, 255, 255, 0) 
         try:
-            result = subprocess.run(['python3', 'file_upload.py', 'image1.jpg'], 
-                                    capture_output=True, 
-                                    text=True, 
-                                    check=True)
+            result = await test_func(guid_filename)
             print("Subprocess completed successfully")
             print("Output:", result.stdout)
 
         except subprocess.CalledProcessError as e:
+            self.update_color(1, 1, 0, 0)
+            self.update_color(2, 1, 0, 0)
             raise RuntimeError(f"Subprocess failed with return code {e.returncode}: {e.stderr}")
-        event=self.generate_button_event(1, "image.jpg")
+        event=self.generate_button_event(1, guid_filename)
         event_json=event.model_dump_json()
         self.iothub.send_message(event_json)
-        self.update_color(1, 1, 0, 0) 
+        self.update_color(1, 0, 1, 0)
+        # Check if the file exists before trying to delete
+        if os.path.exists(guid_filename):
+            os.remove(guid_filename)
+            print(f"{guid_filename} has been deleted.")
+        else:
+            print(f"{guid_filename} does not exist.")
+        time.sleep(3)
+        self.update_color(1, 0, 0, 0)
 
     def button_2_press(self):
         self.update_color(1, 1, 0, 0) 

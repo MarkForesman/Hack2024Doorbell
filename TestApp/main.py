@@ -109,6 +109,9 @@ if device_mode == "Signaler":
 elif device_mode == "Doorbell":
     from doorbell import Doorbell
     device = Doorbell(iothub, updateColor)
+elif device_mode == "LabelScanner":
+    from label_scanner import Scanner
+    device = Scanner(iothub, updateColor)
 
 
 button1.when_pressed = device.button_1_press
