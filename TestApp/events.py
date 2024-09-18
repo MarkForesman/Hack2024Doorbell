@@ -8,6 +8,7 @@ class ButtonPressEvent(BaseModel):
     Metadata: str
 
 class PackagePickerConfirmedPayload(BaseModel):
+    Location: str
     DeviceId:str
     Type: str
 

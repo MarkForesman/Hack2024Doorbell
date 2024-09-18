@@ -3,4 +3,4 @@ rpi.gpio
 gpiozero
 python-dotenv
 pydantic
-
+azure-iot-device
