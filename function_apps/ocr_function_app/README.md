@@ -44,7 +44,7 @@ Once these are deployed, you will have to configure some of the services.
 | `DOCUMENT_INTELLIGENCE_ENDPOINT`               | The endpoint URL for the document intelligence service within Azure. |
 | `DOCUMENT_INTELLIGENCE_API_KEY`                | The API key used for authenticating requests to the document intelligence service. |
 | `STORAGE_ACCOUNT_CONNECTION_STRING`            | The connection string used to connect to the storage account (e.g., Azure Blob Storage). |
-| `STORAGE_CONTAINER_NAME`                       | The name of the container in the storage account where the Employee JSON configuration file is stored. |
+| `CONFIG_STORAGE_CONTAINER_NAME`                       | The name of the container in the storage account where the Employee JSON configuration file is stored. |
 | `EMAIL_COMMUNICATION_CONNECTION_STRING`        | The connection string used to connect to the email communication service. |
 | `COMMUNICATION_SENDER_ADDRESS`                 | The email address from which communications will be sent. |
 | `GROUP_EMAIL_ALIAS`                            | An alias for a group email address that can be used for sending emails to multiple recipients. |
