@@ -10,12 +10,15 @@ load_dotenv(override=True)
 # Define connection string for your device
 connection_string = os.getenv("IOT_CONNECTION_STRING")
 
+print(connection_string)
 # Create an IoT Hub client instance
 client = IoTHubDeviceClient.create_from_connection_string(connection_string)
 
 def send_message(client):
     # Create a message to send
-    message = Message('{"Button": 1, "DeviceType":"Doorbell", "DeviceId": "107", "Metadata": ""}')
+    #message = Message('{"Button": 1, "DeviceType":"Doorbell", "DeviceId": "107", "Metadata": ""}')
+    message = Message('{"Button": 1, "DeviceType":"LabelScanner", "DeviceId": "107", "Metadata": "mark_foresman_good.jpg "}')
+    
     message.content_encoding = "utf-8"
     message.content_type = "application/json"
     

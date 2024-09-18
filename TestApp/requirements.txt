@@ -1,5 +1,6 @@
 azure-eventhub==5.12.1
 rpi.gpio
 python-dotenv
+pydantic
 
 
