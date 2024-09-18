@@ -26,24 +26,6 @@ flux check --pre
 
 flux install
 
-# Configure flux with github repository
-
-DEVICE_NAME="device-104"
-
-flux create source git doorbell \
-  --url=https://github.com/MarkForesman/Hack2024Doorbell.git \
-  --branch=main \
-  --interval=1m 
-------------------------------------------------------------------------------------------------
-flux create kustomization podinfo \
-  --source=doorbell \
-  --path="./gitops/clusters/$DEVICE_NAME" \
-  --prune=true \
-  --wait=true \
-  --interval=1m \
-  --retry-interval=2m \
-  --health-check-timeout=3m 
-------------------------------------------------------------------------------------------------
 # Install Helm
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
@@ -66,6 +48,24 @@ sudo kubectl create secret -n external-secrets generic azkv-secret \
   --from-literal=ClientID="$SP_CLIENT_ID" \
   --from-literal=ClientSecret="$SP_CLIENT_SECRET"
 
+# Configure flux with github repository
+
+DEVICE_NAME="device-104"
+
+flux create source git doorbell \
+  --url=https://github.com/MarkForesman/Hack2024Doorbell.git \
+  --branch=main \
+  --interval=1m 
+
+flux create kustomization podinfo \
+  --source=doorbell \
+  --path="./gitops/clusters/$DEVICE_NAME" \
+  --prune=true \
+  --wait=true \
+  --interval=1m \
+  --retry-interval=2m \
+  --health-check-timeout=3m 
+
 ```
 
 Optional nice to have shell configuration
@@ -73,7 +73,11 @@ Optional nice to have shell configuration
 ```sh
 # Install K9s
 
+sudo su
 curl -sS https://webi.sh/k9s | sh
+
+mkdir -p ~/.kube
+sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
 
 # Add flux autocomplete to bash
 
