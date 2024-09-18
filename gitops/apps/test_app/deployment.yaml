@@ -21,10 +21,10 @@ spec:
           imagePullPolicy: Always
           volumeMounts:
             - mountPath: /dev/
-              name: devDirectory
+              name: dev-directory
               readOnly: true
       volumes:
-        - name: devDirectory
+        - name: dev-directory
           hostPath:
             path: /dev/
       imagePullSecrets:
