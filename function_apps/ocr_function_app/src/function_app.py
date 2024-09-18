@@ -19,7 +19,6 @@ di_endpoint = os.environ["DOCUMENT_INTELLIGENCE_ENDPOINT"]
 di_key = os.environ["DOCUMENT_INTELLIGENCE_API_KEY"]
 blob_connection_string = os.environ["STORAGE_ACCOUNT_CONNECTION_STRING"]
 str_account_key = os.environ["STORAGE_ACCOUNT_KEY"]
-str_storage_account_name = os.environ["STORAGE_ACCOUNT_NAME"]
 str_config_container_name = os.environ["CONFIG_STORAGE_CONTAINER_NAME"]
 str_devices_container_name = os.environ["DEVICES_CONTAINER_NAME"]
 email_connection_string=os.environ["EMAIL_COMMUNICATION_CONNECTION_STRING"]
@@ -55,16 +54,19 @@ def package_notifier(msg: func.QueueMessage) -> None:
     event = PackageLabelScanEvent(**message_dict)
     event.Payload.Path
     blob_name = f"{event.Payload.DeviceId}/{event.Payload.Path}".strip()
-    
+    print(blob_name)
     blob_sas = generate_blob_sas_token(blob_service_client=blob_service_client,
-                                           container_name=str_config_container_name,
+                                           container_name=str_devices_container_name,
                                            blob_name=blob_name,
                                            account_key=str_account_key)
 
     
-    blob_url = f"{blob_service_client.url}{str_devices_container_name}/{blob_name}/{blob_sas}".strip()
+    blob_url = f"{blob_service_client.url}{str_devices_container_name}/{blob_name}?{blob_sas}".strip()
+    print(blob_url)
 
     names = [employee.name for employee in employees.employees]
+    
+    print(blob_url)
     shipping_label = document_intelligence_ocr(document_analysis_client=document_intelligence_client, image_url=blob_url) # TODO: Add logic to extract file name and build url
     fuzzy_result = extract_name_from_label(shipping_label=shipping_label, employee_list=names)
     if fuzzy_result is None:
@@ -73,4 +75,4 @@ def package_notifier(msg: func.QueueMessage) -> None:
         pass
     found_employee = employees.find_employee_by_name(fuzzy_result)
     print(found_employee.name)
-    # send_email_service(connection_string=email_connection_string, sender_address=sender_address, employee=found_employee, image_url=blob_url) # TODO: Add image url
+    send_email_service(connection_string=email_connection_string, sender_address=sender_address, employee=found_employee, image_url=blob_url) # TODO: Add image url
