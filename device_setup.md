@@ -7,7 +7,7 @@
 curl -sfL https://get.k3s.io | sh -
 
 mkdir -p ~/.kube
-cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
+sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
 
 sudo echo " cgroup_memory=1 cgroup_enable=memory" | sudo tee -a /boot/cmdline.txt
 sudo cat /boot/cmdline.txt
