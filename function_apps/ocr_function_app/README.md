@@ -40,22 +40,25 @@ Once these are deployed, you will have to configure some of the services.
    - Create a container for shipping labels, (default container name is `packagelabels`)
    - Create a storage queue (default queue name is packagelabels)
 3. The Azure Function relies on a specific type of queue message
+  Sample queue message
 
-Sample queue message
-
-```json
-{
-  "TimeStamp":"2024-09-18T17:35:11.869781Z",
-  "Type":"PackageLabelScanEvent",
-  "Payload":{
-    "DeviceId":"107",
-    "Path":"mark_foresman_good.jpg",
-    "Type":"PackageLabelScanEvent"
-    }
-}
-```
+  ```json
+  {
+    "TimeStamp":"2024-09-18T17:35:11.869781Z",
+    "Type":"PackageLabelScanEvent",
+    "Payload":{
+      "DeviceId":"107",
+      "Path":"mark_foresman_good.jpg",
+      "Type":"PackageLabelScanEvent"
+      }
+  }
+  ```
 
 Make sure to follow this format. It will *only* continue if the message type is `PackageLabelScanEvent`.
+
+4. There are a few environment variables that need to be configured, details on those are below.
+   - To configure, you will need to copy the existing [.env.template](./src/.env.template) and
+   rename it to to `.env`. Fill in the values as needed.
 
 | Variable Name                                   | Description                                      |
 |------------------------------------------------|--------------------------------------------------|
