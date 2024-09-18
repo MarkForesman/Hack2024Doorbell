@@ -4,8 +4,6 @@ from picamera2 import Picamera2
 import time
 import subprocess
 import uuid
-import asyncio
-from file_upload import upload_blob_file
 import os
 
 # Initialize the camera
@@ -24,20 +22,16 @@ class Scanner:
         print("Button 1 pressed")
         camera.capture_file(guid_filename)
         self.update_color(1, 255, 255, 0) 
-        try:
-            result = asyncio.run(self.iothub.upload_blob_file(guid_filename))
-            print("Subprocess completed successfully")
-            print("Output:", result.stdout)
-
-        except subprocess.CalledProcessError as e:
+        result: dict = self.iothub.upload_blob_file(guid_filename)
+        print("Output:", result)
+        if result.get("status_code") is not 200:
             self.update_color(1, 1, 0, 0)
             self.update_color(2, 1, 0, 0)
-            raise RuntimeError(f"Subprocess failed with return code {e.returncode}: {e.stderr}")
+            raise Exception(f"Process failed! {result}")
         event=self.generate_button_event(1, guid_filename)
         event_json=event.model_dump_json()
         self.iothub.send_message(event_json)
         self.update_color(1, 0, 1, 0)
-        # Check if the file exists before trying to delete
         if os.path.exists(guid_filename):
             os.remove(guid_filename)
             print(f"{guid_filename} has been deleted.")

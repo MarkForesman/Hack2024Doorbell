@@ -1,5 +1,4 @@
 from azure.iot.device import IoTHubDeviceClient, Message
-from azure.iot.device.aio import IoTHubDeviceClient
 from azure.storage.blob import BlobClient
 from azure.core.exceptions import ResourceExistsError
 from dotenv import load_dotenv
@@ -31,7 +30,7 @@ class IoTHub:
     def disconnect(self):
         self.client.shutdown()
     
-    async def upload_via_storage_blob(self, blob_info, file_name):
+    def upload_via_storage_blob(self, blob_info, file_name):
         """Helper function written to perform Storage Blob V12 Upload Tasks
 
         Arguments:
@@ -59,14 +58,14 @@ class IoTHub:
 
         return result
     
-    async def upload_blob_file(self, file_name: str):
+    def upload_blob_file(self, file_name: str):
         # get the Storage SAS information from IoT Hub.
-        storage_info = await self.client.get_storage_info_for_blob(file_name)
+        storage_info = self.client.get_storage_info_for_blob(file_name)
         result = {"status_code": -1, "status_description": "N/A"}
 
         # Using the Storage Blob V12 API, perform the blob upload.
         try:
-            upload_result = await self.upload_via_storage_blob(storage_info, file_name)
+            upload_result = self.upload_via_storage_blob(storage_info, file_name)
             if hasattr(upload_result, "error_code"):
                 result = {
                     "status_code": upload_result.error_code,
@@ -85,13 +84,14 @@ class IoTHub:
         pp.pprint(result)
 
         if result["status_code"] == 200:
-            await self.client.notify_blob_upload_status(
+            self.client.notify_blob_upload_status(
                 storage_info["correlationId"], True, result["status_code"], result["status_description"]
             )
         else:
-            await self.client.notify_blob_upload_status(
+            self.client.notify_blob_upload_status(
                 storage_info["correlationId"],
                 False,
                 result["status_code"],
                 result["status_description"],
             )
+        return result
