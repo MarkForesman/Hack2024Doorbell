@@ -15,7 +15,7 @@ client = IoTHubDeviceClient.create_from_connection_string(connection_string)
 
 def send_message(client):
     # Create a message to send
-    message = Message("Hello, IoT Hub!")
+    message = Message('{"Button": 1, "DeviceType":"Doorbell", "DeviceId": "107", "Metadata": ""}')
     message.content_encoding = "utf-8"
     message.content_type = "application/json"
     
