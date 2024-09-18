@@ -27,10 +27,16 @@ spec:
             - name: udev
               mountPath: /run/udev
               readOnly: true
+            - name: sys
+              mountPath: /sys
+              readOnly: true
       volumes:
         - name: udev
           hostPath:
             path: /run/udev
+        - name: sys
+          hostPath:
+            path: /sys
 
       imagePullSecrets:
         - name: acr-pull
