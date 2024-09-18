@@ -7,7 +7,6 @@
   - [Overview](#overview)
     - [Setup](#setup)
       - [Prerequisites](#prerequisites)
-    - [Email Communication Service](#email-communication-service)
   - [Resources](#resources)
 
 ## Overview
@@ -54,28 +53,24 @@ Sample queue message
     "Type":"PackageLabelScanEvent"
     }
 }
-
-Make sure to follow this format.
 ```
+
+Make sure to follow this format. It will *only* continue if the message type is `PackageLabelScanEvent`.
 
 | Variable Name                                   | Description                                      |
 |------------------------------------------------|--------------------------------------------------|
 | `DOCUMENT_INTELLIGENCE_ENDPOINT`               | The endpoint URL for the document intelligence service within Azure. |
 | `DOCUMENT_INTELLIGENCE_API_KEY`                | The API key used for authenticating requests to the document intelligence service. |
 | `STORAGE_ACCOUNT_CONNECTION_STRING`            | The connection string used to connect to the storage account (e.g., Azure Blob Storage). |
-| `CONFIG_STORAGE_CONTAINER_NAME`                       | The name of the container in the storage account where the Employee JSON configuration file is stored. |
+| `STORAGE_ACCOUNT_KEY`                           | The key used for accessing the Azure Storage account directly. |
+| `STORAGE_QUEUE_NAME`                           | The name of the Azure Storage Queue for processing package labels. |
+| `DEVICES_CONTAINER_NAME`                       | The name of the container in Azure Blob Storage where device-related files are stored. |
+| `CONFIG_STORAGE_CONTAINER_NAME`                | The name of the container in the storage account where configuration files are stored. |
 | `EMAIL_COMMUNICATION_CONNECTION_STRING`        | The connection string used to connect to the email communication service. |
 | `COMMUNICATION_SENDER_ADDRESS`                 | The email address from which communications will be sent. |
 | `GROUP_EMAIL_ALIAS`                            | An alias for a group email address that can be used for sending emails to multiple recipients. |
 
-### Email Communication Service
-
-This function app uses the Communication and Email Communication Azure service.
-
-Useful links:
+## Resources
 
 <https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/connect-email-communication-resource?pivots=azure-portal>
 <https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/send-email?tabs=linux%2Cconnection-string%2Csend-email-and-get-status-async%2Csync-client&pivots=platform-azportal>
-
-## Resources
-
