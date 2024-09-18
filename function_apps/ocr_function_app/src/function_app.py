@@ -3,7 +3,7 @@ from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 from utils.ocr import document_intelligence_ocr
 from utils.fuzzy_search import extract_name_from_label
-from utils.blob_downloader import download_blob_to_string
+from function_apps.ocr_function_app.src.services.blob_downloader import download_blob_to_string
 from models.employee import Employees
 import logging
 import os
@@ -16,6 +16,8 @@ di_endpoint = os.environ["DOCUMENT_INTELLIGENCE_ENDPOINT"]
 di_key = os.environ["DOCUMENT_INTELLIGENCE_API_KEY"]
 blob_connection_string = os.environ["STORAGE_ACCOUNT_CONNECTION_STRING"]
 blob_container_name = os.environ["STORAGE_CONTAINER_NAME"]
+connection_string=os.environ["EMAIL_COMMUNICATION_CONNECTION_STRING"]
+sender_address=os.environ["COMMUNICATION_SENDER_ADDRESS"]
 
 # Clients
 document_intelligence_client = DocumentAnalysisClient(endpoint=di_endpoint, credential=AzureKeyCredential(di_key))

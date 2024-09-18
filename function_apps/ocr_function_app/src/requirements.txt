@@ -8,3 +8,4 @@ azure-ai-formrecognizer==3.3.3
 pydantic==2.9.2
 azure-storage-blob==12.23.0
 azure-identity==1.17.1
+azure-communication-email==1.0.0

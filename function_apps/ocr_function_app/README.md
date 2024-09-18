@@ -19,5 +19,7 @@ Useful links:
 <https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/connect-email-communication-resource?pivots=azure-portal>
 <https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/send-email?tabs=linux%2Cconnection-string%2Csend-email-and-get-status-async%2Csync-client&pivots=platform-azportal>
 
+
+
 ## Resources
 
