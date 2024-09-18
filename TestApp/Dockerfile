@@ -12,6 +12,8 @@ RUN apt update && apt -y upgrade
 RUN apt update && apt install -y --no-install-recommends \
          python3-pip \
          python3-picamera2 \
+         python3-dev \
+         libffi-dev gcc \
      && apt-get clean \
      && apt-get autoremove \
      && rm -rf /var/cache/apt/archives/* \
@@ -29,6 +31,7 @@ COPY requirements.txt /app/
 
 # Install Python dependencies
 # TODO: fix issue with "--break-system-packages" flag
+RUN pip install --upgrade pip setuptools
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the Python files
