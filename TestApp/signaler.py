@@ -28,7 +28,6 @@ class Signaler:
         return ButtonPressEvent(Button=button, DeviceType="Signaler", DeviceId=self.iothub.device_id, Metadata="")     
 
     def message_received(self, message):
-        print("Properties: ", message.custom_properties)
         msg = json.loads(message.data.decode("utf-8"))
         msgType = msg.get("Type")
         if  msgType == "PackageArrivedEvent":
