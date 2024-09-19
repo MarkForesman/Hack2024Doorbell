@@ -22,11 +22,8 @@ logger.setLevel(logging.DEBUG)
 """
 Welcome to the Upload to Blob sample for the Azure IoT Device Library for Python. To use this sample you must have azure.storage.blob installed in your python environment.
 To do this, you can run:
-
     $ pip install azure.storage.blob
-
 This sample covers using the following Device Client APIs:
-
     get_storage_info_for_blob
         - used to get relevant information from IoT Hub about a linked Storage Account, including
         a hostname, a container name, a blob name, and a sas token. Additionally it returns a correlation_id
@@ -36,21 +33,16 @@ This sample covers using the following Device Client APIs:
         - used to notify IoT Hub of the status of your blob storage operation. This uses the correlation_id obtained
         by the get_storage_info_for_blob task, and will tell IoT Hub to notify any service that might be listening for a notification on the
         status of the file upload task.
-
 You can learn more about File Upload with IoT Hub here:
-
 https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-file-upload
-
 """
 IOTHUB_DEVICE_CONNECTION_STRING = os.getenv("IOT_CONNECTION_STRING")
 
 
 async def upload_via_storage_blob(blob_info, file_name):
     """Helper function written to perform Storage Blob V12 Upload Tasks
-
     Arguments:
     blob_info - an object containing the information needed to generate a sas_url for creating a blob client
-
     Returns:
     status of blob upload operation, in the storage provided structure.
     """
