@@ -1,3 +1,17 @@
 resources:
-  - ./../../apps/test_app
+  - ./../../apps/doorbell_app
   - ./../../apps/eso
+  - external-secret.yaml
+
+patches:
+  - patch: |-
+      - op: add
+        path: "/spec/template/spec/containers/0/env/-"
+        value:
+           name: DEVICE_MODE
+           value: "Signaler"
+    target:
+      kind: Deployment
+      namespace: workloads
+      name: doorbell-app
+
