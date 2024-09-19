@@ -26,9 +26,16 @@ spec:
                 secretKeyRef:
                   name: device-iot-hub-conn-str
                   key: iot-hub-connection-string
-                  
+
           image: acrdoorbell.azurecr.io/testapp2:latest
           imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
           volumeMounts:
             - name: udev
               mountPath: /run/udev
