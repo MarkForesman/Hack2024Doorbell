@@ -1,7 +1,6 @@
 resources:
   - ./../../apps/doorbell_app
   - ./../../apps/eso
-  - external-secret.yaml
 
 patches:
   - patch: |-
@@ -9,9 +8,15 @@ patches:
         path: "/spec/template/spec/containers/0/env/-"
         value:
            name: DEVICE_MODE
-           value: "Signaler"
+           value: "LabelScanner"
     target:
       kind: Deployment
       namespace: workloads
       name: doorbell-app
-
+  - patch: |-
+      - op: replace
+        path: "/spec/data/0/remoteRef/key"
+        value: secret/device-109-iot-hub-connection-string
+    target:
+      kind: ExternalSecret
+      name: device-iothub-external-secret
