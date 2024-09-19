@@ -1,3 +1,22 @@
 resources:
   - ./../../apps/test_app
   - ./../../apps/eso
+
+patches:
+  - patch: |-
+      - op: add
+        path: "/spec/template/spec/containers/0/env/-"
+        value:
+           name: DEVICE_MODE
+           value: "Signaler"
+    target:
+      kind: Deployment
+      namespace: workloads
+      name: doorbell-app
+  - patch: |-
+      - op: replace
+        path: "/spec/data/0/remoteRef/key"
+        value: secret/device-109-iot-hub-connection-string
+    target:
+      kind: ExternalSecret
+      name: device-iothub-external-secret

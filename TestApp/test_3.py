@@ -1,7 +1,6 @@
 #libraries
 import RPi.GPIO as GPIO
 from time import sleep
-from gpiozero import Button
 from picamera2 import Picamera2
 
 #set red,green and blue pins
@@ -10,13 +9,13 @@ greenPin1 = 4
 bluePin1 = 3
 buttonPin1 = 20
 
+
+
 redPin2 = 5
 greenPin2 = 13
 bluePin2 = 6
 buttonPin2 = 21
 
-button1 = Button(buttonPin1, pull_up = True, bounce_time = 0.05)
-button2 = Button(buttonPin2, pull_up = True, bounce_time = 0.05)
 
 camera = Picamera2()
 
@@ -51,12 +50,10 @@ def init_GPIO():
     GPIO.setup(greenPin2,GPIO.OUT)
     GPIO.setup(bluePin2,GPIO.OUT)
 
-    #Attach event handlers for switch press and release
-    button1.when_pressed = button_1_pressed
-    button1.when_released = button_1_released
+    GPIO.setup(buttonPin1, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(buttonPin2, GPIO.IN, GPIO.PUD_UP)
 
-    button2.when_pressed = button_2_pressed
-    button2.when_released = button_2_released
+
 
 def init_camera():
     #init camera
@@ -136,5 +133,23 @@ updateColor(1, 0, 0, 1)
 updateColor(2, 0, 0, 1) 
 sleep(1)
 
+lastbuttonstate1 = False
+lastbuttonstate2 = False
 while True:
-    sleep(1)
+    buttonstate1 = GPIO.input(buttonPin1)
+    buttonstate2 = GPIO.input(buttonPin2)
+    if buttonstate1 != lastbuttonstate1:
+        if buttonstate1:
+            button_1_pressed()
+        else:
+            button_1_released()
+
+    lastbuttonstate1 = buttonstate1
+    if buttonstate2 != lastbuttonstate2:
+        if buttonstate2:
+            button_2_pressed()
+        else:
+            button_2_released()
+
+    lastbuttonstate2 = buttonstate2
+    sleep(.01)

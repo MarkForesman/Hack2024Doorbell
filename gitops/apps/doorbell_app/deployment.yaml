@@ -2,34 +2,33 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: camera-app
+  name: doorbell-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: camera-app
+      app: doorbell-app
   template:
     metadata:
       labels:
-        app: camera-app
+        app: doorbell-app
     spec:
       containers:
-        - name: camera-app-container
+        - name: doorbell-app-container
           securityContext:
             privileged: true
           command: ["python3", "-u", "/app/test_3.py"]
           env:
             - name: LD_LIBRARY_PATH
               value: /opt/vc/lib
+            - name: IOT_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: device-iot-hub-conn-str
+                  key: iot-hub-connection-string
+
           image: acrdoorbell.azurecr.io/testapp2:latest
           imagePullPolicy: Always
-          volumeMounts:
-            - name: udev
-              mountPath: /run/udev
-              readOnly: true
-            - name: sys
-              mountPath: /sys
-              readOnly: true
           resources:
             requests:
               memory: "64Mi"
@@ -37,6 +36,13 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "500m"
+          volumeMounts:
+            - name: udev
+              mountPath: /run/udev
+              readOnly: true
+            - name: sys
+              mountPath: /sys
+              readOnly: true
       volumes:
         - name: udev
           hostPath:
