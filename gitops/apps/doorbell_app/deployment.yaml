@@ -27,7 +27,7 @@ spec:
                   name: device-iot-hub-conn-str
                   key: iot-hub-connection-string
                   
-          image: acrdoorbell.azurecr.io/doorbell_main:latest
+          image: acrdoorbell.azurecr.io/testapp2:latest
           imagePullPolicy: Always
           volumeMounts:
             - name: udev
