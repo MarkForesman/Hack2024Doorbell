@@ -40,7 +40,7 @@ class Scanner:
         time.sleep(3)
         self.update_color(1, 0, 0, 0)
 
-    def button_2_press(self):
+    def button_2_press(self): # Copied for brevity, we could omit this button or refactor
         guid_filename = f"{uuid.uuid4()}.jpg"
         print("Button 1 pressed")
         camera.capture_file(guid_filename)
@@ -65,19 +65,4 @@ class Scanner:
 
     def generate_button_event(self, button, file_name):
         return ButtonPressEvent(Button=button, DeviceType="LabelScanner", DeviceId=self.iothub.device_id, Metadata=file_name)     
-
-    def message_received(self, message):
-        print("Properties: ", message.custom_properties)
-        msg = json.loads(message.data.decode("utf-8"))
-        msgType = msg.get("Type")
-        if  msgType == "PackageArrivedEvent":
-             event = PackageArrivedEvent(**msg)
-             print(f"Package arrived event received: {event}")
-             self.update_color(1, 0, 1, 0)
-        # else if "PackagePickerConfirmedEvent" in message:
-        #     event = PackagePickerConfirmedEvent.model_validate_json(message)
-        #     print(f"Package picker confirmed event received: {event}")
-        #     #self.update_color(1, 0, 1, 0)
-        else:
-            print("Unknown message received")
-
+    
