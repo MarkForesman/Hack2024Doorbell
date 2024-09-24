@@ -8,7 +8,7 @@ patches:
         path: "/spec/template/spec/containers/0/env/-"
         value:
            name: DEVICE_MODE
-           value: "DoorbellBack"
+           value: "Doorbell"
     target:
       kind: Deployment
       namespace: workloads
