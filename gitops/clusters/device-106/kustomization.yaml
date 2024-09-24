@@ -16,7 +16,7 @@ patches:
   - patch: |-
       - op: replace
         path: "/spec/data/0/remoteRef/key"
-        value: secret/device-109-iot-hub-connection-string
+        value: secret/device-106-iot-hub-connection-string
     target:
       kind: ExternalSecret
       name: device-iothub-external-secret
