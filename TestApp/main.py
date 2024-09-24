@@ -106,10 +106,7 @@ iothub = IoTHub()
 if device_mode == "Signaler":
     from signaler import Signaler
     device = Signaler(iothub, updateColor)
-elif device_mode == "DoorbellFront":
-    from doorbell import Doorbell
-    device = Doorbell(iothub, updateColor)
-elif device_mode == "DoorbellBack":
+elif device_mode == "Doorbell":
     from doorbell import Doorbell
     device = Doorbell(iothub, updateColor)
 elif device_mode == "LabelScanner":
