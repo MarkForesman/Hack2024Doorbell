@@ -2,7 +2,7 @@
 import RPi.GPIO as GPIO
 from time import sleep
 from picamera2 import Picamera2
-
+import os
 #set red,green and blue pins
 redPin1 = 2
 greenPin1 = 4
@@ -16,17 +16,21 @@ greenPin2 = 13
 bluePin2 = 6
 buttonPin2 = 21
 
+device_mode = os.getenv("DEVICE_MODE")
 
-camera = Picamera2()
+if device_mode == "LabelScanner":
+    camera = Picamera2()
 
 def button_1_pressed():
     print("button1 pressed")
-    camera.capture_file('./image1.jpg')
+    if device_mode == "LabelScanner":
+        camera.capture_file('./image1.jpg')
     updateColor(1, 1, 0, 0) 
 
 def button_2_pressed():
     print("button_2 pressed")
-    camera.capture_file('./image2.jpg')
+    if device_mode == "LabelScanner":
+        camera.capture_file('./image2.jpg')
     updateColor(2, 1, 0, 0) 
 
 def button_1_released():
@@ -117,7 +121,8 @@ def lightBlue():
     GPIO.output(bluePin,GPIO.LOW)
 '''
 init_GPIO()
-init_camera()
+if device_mode == "LabelScanner":
+    init_camera()
 
 #while True:
 updateColor(1, 0, 0, 0) 
