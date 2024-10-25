@@ -2,7 +2,7 @@
 import RPi.GPIO as GPIO
 import threading
 from time import sleep
-from gpiozero import Button
+#from gpiozero import Button
 import os
 from dotenv import load_dotenv
 from iothub import IoTHub
@@ -25,8 +25,8 @@ greenPin2 = 13
 bluePin2 = 6
 buttonPin2 = 20
 
-button1 = Button(buttonPin1, pull_up = True, bounce_time = 0.05)
-button2 = Button(buttonPin2, pull_up = True, bounce_time = 0.05)
+#button1 = Button(buttonPin1, pull_up = True, bounce_time = 0.05)
+#button2 = Button(buttonPin2, pull_up = True, bounce_time = 0.05)
 
 #camera = Picamera2()
 
@@ -60,6 +60,10 @@ def init_GPIO():
     GPIO.setup(redPin2,GPIO.OUT)
     GPIO.setup(greenPin2,GPIO.OUT)
     GPIO.setup(bluePin2,GPIO.OUT)
+    
+    GPIO.setup(buttonPin1, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(buttonPin2, GPIO.IN, GPIO.PUD_UP)
+
     for i in range(5):
         updateColor(1, 1, 0, 1)
         updateColor(2, 1, 0, 1)
@@ -69,7 +73,7 @@ def init_GPIO():
         sleep(.05)
 
 
-    #Attach event handlers for switch press and release
+#Attach event handlers for switch press and release
 
 
     # button1.when_pressed = button_1_pressed
@@ -114,19 +118,49 @@ elif device_mode == "LabelScanner":
     device = Scanner(iothub, updateColor)
 
 
-button1.when_pressed = device.button_1_press
-button2.when_pressed = device.button_2_press
+#button1.when_pressed = device.button_1_press
+#button2.when_pressed = device.button_2_press
 
 
 
 
 # Create a timer that runs `my_function` after 5 seconds
 
+def button_1_pressed():
+    print("button1 pressed")
+    device.button_1_press
+
+def button_2_pressed():
+    print("button_2 pressed")
+    device.button_2_press
+
+def button_1_released():
+    print("button_1 released")
+
+def button_2_released():
+    print("button_2 released")
 
 
-
+lastbuttonstate1 = False
+lastbuttonstate2 = False
 while True:
-    sleep(1)
+    buttonstate1 = GPIO.input(buttonPin1)
+    buttonstate2 = GPIO.input(buttonPin2)
+    if buttonstate1 != lastbuttonstate1:
+        if buttonstate1:
+            button_1_pressed()
+        else:
+            button_1_released()
+
+    lastbuttonstate1 = buttonstate1
+    if buttonstate2 != lastbuttonstate2:
+        if buttonstate2:
+            button_2_pressed()
+        else:
+            button_2_released()
+
+    lastbuttonstate2 = buttonstate2
+    sleep(.01)
 
 
 '''
