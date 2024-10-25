@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from iothub import IoTHub
 load_dotenv(override=True)
 
+print("start")
 
 # Define connection string for your device
 connection_string = os.getenv("IOT_CONNECTION_STRING")
@@ -122,27 +123,30 @@ elif device_mode == "LabelScanner":
 #button2.when_pressed = device.button_2_press
 
 
-
+print(device_mode)
 
 # Create a timer that runs `my_function` after 5 seconds
 
 def button_1_pressed():
-    print("button1 pressed")
+    print("button1 pressed_")
     device.button_1_press
 
 def button_2_pressed():
-    print("button_2 pressed")
+    print("button_2 pressed_")
     device.button_2_press
 
 def button_1_released():
-    print("button_1 released")
+    print("button_1 released_")
 
 def button_2_released():
-    print("button_2 released")
+    print("button_2 released_")
 
 
 lastbuttonstate1 = False
 lastbuttonstate2 = False
+
+print("running")
+
 while True:
     buttonstate1 = GPIO.input(buttonPin1)
     buttonstate2 = GPIO.input(buttonPin2)

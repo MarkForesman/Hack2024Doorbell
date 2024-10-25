@@ -38,4 +38,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY  . /app/
 
 # Set the entry point
-CMD ["python3", "/app/test_3.py"]
+CMD ["python3", "/app/main.py"]

@@ -17,7 +17,7 @@ spec:
         - name: doorbell-app-container
           securityContext:
             privileged: true
-          command: ["python3", "-u", "/app/test_3.py"]
+          command: ["python3", "-u", "/app/main.py"]
           env:
             - name: LD_LIBRARY_PATH
               value: /opt/vc/lib
