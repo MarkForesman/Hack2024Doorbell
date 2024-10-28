@@ -7,8 +7,8 @@ load_dotenv(override=True)
 
 
 # Define connection string for your device
-connection_string = os.getenv("DEVICE_CONNECTION_STRING")
-
+connection_string = os.getenv("IOT_CONNECTION_STRING")
+print (connection_string)
 # Create an IoT Hub client instance
 client = IoTHubDeviceClient.create_from_connection_string(connection_string)
 

@@ -2,8 +2,9 @@ import json
 from events import *
 
 class Signaler:
-    light_reset = 5
+    light_reset = 500
     def __init__(self, iothub, update_color):
+        print("signaler here")
         self.iothub = iothub
         self.update_color = update_color
         self.iothub.receive(self.message_received)
@@ -28,6 +29,7 @@ class Signaler:
         return ButtonPressEvent(Button=button, DeviceType="Signaler", DeviceId=self.iothub.device_id, Metadata="")     
 
     def message_received(self, message):
+        print(message)
         msg = json.loads(message.data.decode("utf-8"))
         msgType = msg.get("Type")
         if  msgType == "PackageArrivedEvent":
@@ -38,7 +40,7 @@ class Signaler:
         elif msgType == "PackagePickerConfirmedEvent":
              event = PackagePickerConfirmedEvent(**msg)
              led_target = 1 if event.Payload.Location=="Back door" else 2
-             self.update_color(led_target, 0, 1, 0, Signaler.light_reset)
+             self.update_color(led_target, 0, 1, 0, 25)
         else:
             print("Unknown message received")
 

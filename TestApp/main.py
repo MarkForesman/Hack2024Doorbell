@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 import threading
 from time import sleep
 #from gpiozero import Button
+import multiprocessing
 import os
 from dotenv import load_dotenv
 from iothub import IoTHub
@@ -14,7 +15,8 @@ print("start")
 connection_string = os.getenv("IOT_CONNECTION_STRING")
 device_mode = os.getenv("DEVICE_MODE")
 #from picamera2 import Picamera2
-
+print(connection_string)
+print(device_mode)
 #set red,green and blue pins
 redPin1 = 2
 greenPin1 = 4
@@ -92,6 +94,8 @@ def init_GPIO():
 
 
 def updateColor(button_num, red, green, blue, reset_after=0):
+    flash = False
+    print("update color")
     if button_num ==1 :
         GPIO.output(redPin1,red)
         GPIO.output(greenPin1,green)
@@ -103,7 +107,43 @@ def updateColor(button_num, red, green, blue, reset_after=0):
     if reset_after > 0:
         threading.Timer(reset_after, updateColor, [button_num, 0, 0, 0]).start()
 
+t1 = None
+on = False
+def updateColorFlash(_on):
+    global on
+    on = _on
+    print(on)
+    if on:
+        t1 = multiprocessing.Process(target=blink(), args=())
+        t1.start()
+    else:
+        t1 = None
+        updateColor(1,0,1,0,60)
+        updateColor(2,0,1,0,60)
+   
+def blink():
+    global on
+    print(on)
+    while on:
+        GPIO.output(redPin1,1)
+        GPIO.output(greenPin1,0)
+        GPIO.output(bluePin1,0)
 
+        GPIO.output(redPin2,1)
+        GPIO.output(greenPin2,0)
+        GPIO.output(bluePin2,0)
+        sleep(1)
+
+        GPIO.output(redPin1,0)
+        GPIO.output(greenPin1,0)
+        GPIO.output(bluePin1,0)
+
+        GPIO.output(redPin2,0)
+        GPIO.output(greenPin2,0)
+        GPIO.output(bluePin2,0)
+        sleep(1)
+        print("blink")
+    print("end of blink")
 
 init_GPIO()
 device = None
@@ -113,7 +153,7 @@ if device_mode == "Signaler":
     device = Signaler(iothub, updateColor)
 elif device_mode == "Doorbell":
     from doorbell import Doorbell
-    device = Doorbell(iothub, updateColor)
+    device = Doorbell(iothub, updateColor,updateColorFlash)
 elif device_mode == "LabelScanner":
     from label_scanner import Scanner
     device = Scanner(iothub, updateColor)
@@ -128,12 +168,14 @@ print(device_mode)
 # Create a timer that runs `my_function` after 5 seconds
 
 def button_1_pressed():
-    print("button1 pressed_")
-    device.button_1_press
+    device.button_1_press()
+    print("button_1 pressed_")
+    
 
-def button_2_pressed():
+def button_2_pressed():    
+    device.button_2_press()
     print("button_2 pressed_")
-    device.button_2_press
+
 
 def button_1_released():
     print("button_1 released_")

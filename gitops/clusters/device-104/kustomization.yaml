@@ -1,5 +1,5 @@
 resources:
-  - ./../../apps/test_app
+  - ./../../apps/doorbell_app
   - ./../../apps/eso
 
 patches:
