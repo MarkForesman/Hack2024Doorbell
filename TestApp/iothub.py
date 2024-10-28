@@ -25,6 +25,7 @@ class IoTHub:
         self.client.send_message(message)
 
     def receive(self, message_received_callback):
+       print("recieved") 
        self.client.on_message_received = message_received_callback
     
     def disconnect(self):
