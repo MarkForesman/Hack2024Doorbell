@@ -184,8 +184,8 @@ def button_2_released():
     print("button_2 released_")
 
 
-lastbuttonstate1 = False
-lastbuttonstate2 = False
+lastbuttonstate1 = True
+lastbuttonstate2 = True
 
 print("running")
 
