@@ -14,6 +14,7 @@ RUN apt update && apt install -y --no-install-recommends \
          python3-picamera2 \
          python3-dev \
          libffi-dev gcc \
+         iputils-ping \
      && apt-get clean \
      && apt-get autoremove \
      && rm -rf /var/cache/apt/archives/* \
