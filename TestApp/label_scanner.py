@@ -22,6 +22,7 @@ class Scanner:
         print("Button 1 pressed")
         camera.capture_file(guid_filename)
         self.update_color(1, 255, 255, 0) 
+        print(guid_filename)
         result: dict = self.iothub.upload_blob_file(guid_filename)
         print("Output:", result)
         if result.get("status_code") is not 200:

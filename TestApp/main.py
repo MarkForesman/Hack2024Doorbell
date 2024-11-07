@@ -28,6 +28,8 @@ greenPin2 = 13
 bluePin2 = 6
 buttonPin2 = 20
 
+micPin = 23
+
 #button1 = Button(buttonPin1, pull_up = True, bounce_time = 0.05)
 #button2 = Button(buttonPin2, pull_up = True, bounce_time = 0.05)
 
@@ -66,6 +68,7 @@ def init_GPIO():
     
     GPIO.setup(buttonPin1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(buttonPin2, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(micPin, GPIO.IN, GPIO.PUD_UP)
 
     for i in range(5):
         updateColor(1, 1, 0, 1)
@@ -186,12 +189,24 @@ def button_2_released():
 
 lastbuttonstate1 = True
 lastbuttonstate2 = True
+lastmicState = True
+print("running newest")
+hostname = "google.com" #example
+response = os.system(f"ping -n -c 1 {hostname}")
+print(response)
 
-print("running")
+if response == 0:
+    print(f"{hostname} is up!")
+else:
+    print(f"{hostname} is down!")
+    updateColor(1, 100, 100, 100,3)
+    updateColor(2, 100, 100, 100,3)
 
+count = 0
 while True:
     buttonstate1 = GPIO.input(buttonPin1)
     buttonstate2 = GPIO.input(buttonPin2)
+    micState = GPIO.input(micPin)
     if buttonstate1 != lastbuttonstate1:
         if buttonstate1:
             button_1_pressed()
@@ -204,9 +219,29 @@ while True:
             button_2_pressed()
         else:
             button_2_released()
-
+    
+    if micState != lastmicState:
+        if micState:
+            device.button_1_press()
+            sleep(1)
+        else:
+            print("sound off")
+    lastmicState = micState
     lastbuttonstate2 = buttonstate2
     sleep(.01)
+    count = count + 1
+    if count > 1000:
+        hostname = "google.com" #example
+        response = os.system(f"ping -n -c 1 {hostname}")
+        print(response)
+
+        if response == 0:
+            print(f"{hostname} is up!")
+        else:
+            print(f"{hostname} is down!")
+            updateColor(1, 50, 50, 50,9)
+            updateColor(2, 50, 50, 50,9)
+        count=0
 
 
 '''
