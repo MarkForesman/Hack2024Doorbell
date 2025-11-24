@@ -115,6 +115,8 @@ class OrchestratorServer:
             data = json.loads(message)
             msg_type = data.get('type')
             
+            logger.info(f"Processing message type '{msg_type}' from {device_id or address}")
+            
             if msg_type == 'register':
                 return self.handle_registration(data, client_socket, address)
             
@@ -133,7 +135,7 @@ class OrchestratorServer:
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON from {device_id or address}: {e}")
         except Exception as e:
-            logger.error(f"Error processing message: {e}")
+            logger.error(f"Error processing message: {e}", exc_info=True)
         
         return device_id
     
@@ -174,6 +176,7 @@ class OrchestratorServer:
             doorbell_states[location]['pressed'] = True
             doorbell_states[location]['confirmed'] = False
             
+            logger.info(f"Broadcasting LED update to Doorbell devices (flashing red)")
             # Set doorbell LED to flashing red (handled by device)
             self.broadcast_led_update(device_id, "Doorbell", {
                 'button': button,
@@ -183,6 +186,7 @@ class OrchestratorServer:
                 'flash': True
             })
             
+            logger.info(f"Broadcasting LED update to Signaler devices (red solid)")
             # Notify signaler devices - light up corresponding LED
             self.broadcast_led_update(None, "Signaler", {
                 'button': 1 if location == "back_door" else 2,
@@ -193,10 +197,11 @@ class OrchestratorServer:
             })
         
         elif device_type == "Signaler":
+            logger.info(f"Signaler button press at {location} - handling as pickup confirmation")
             # Signaler button press means package picked up
             self.handle_pickup_confirmation({
                 'device_id': device_id,
-                'location': 'back_door' if button == 1 else 'front_door'
+                'location': location
             })
     
     def handle_pickup_confirmation(self, data: dict):
@@ -246,14 +251,26 @@ class OrchestratorServer:
             'command': led_command
         }
         
+        # Get list of target devices first, then send outside lock
+        targets = []
         with lock:
             for device_id, info in connected_clients.items():
                 if info['device_type'] == target_device_type:
                     if exclude_device_id is None or device_id != exclude_device_id:
-                        self.send_to_device(device_id, message)
+                        targets.append((device_id, info['socket']))
+        
+        # Send to each target
+        for device_id, client_socket in targets:
+            try:
+                message_str = json.dumps(message) + '\n'
+                client_socket.sendall(message_str.encode('utf-8'))
+                logger.info(f"LED update sent to {device_id}: {led_command}")
+            except Exception as e:
+                logger.error(f"Error sending LED update to {device_id}: {e}")
     
     def send_to_device(self, device_id: str, message: dict):
         """Send message to a specific device"""
+        client_socket = None
         with lock:
             if device_id not in connected_clients:
                 logger.warning(f"Device {device_id} not connected")
@@ -264,7 +281,7 @@ class OrchestratorServer:
         try:
             message_str = json.dumps(message) + '\n'
             client_socket.sendall(message_str.encode('utf-8'))
-            logger.debug(f"Sent to {device_id}: {message}")
+            logger.info(f"Sent to {device_id}: {message}")
         except Exception as e:
             logger.error(f"Error sending to {device_id}: {e}")
     

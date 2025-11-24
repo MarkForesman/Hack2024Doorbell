@@ -90,14 +90,18 @@ class TcpClient:
         try:
             # Parse the JSON message to get event details
             message_data = json.loads(str_message)
+            button = message_data.get('Button', 1)
+            
+            # Map button to location: button 1 = back_door, button 2 = front_door
+            location = 'back_door' if button == 1 else 'front_door'
             
             # Transform to orchestrator format
             button_press_msg = {
                 'type': 'button_press',
                 'device_id': self.device_id,
                 'device_type': self.device_type,
-                'button': message_data.get('Button', 1),
-                'location': 'front_door'  # Default, can be customized
+                'button': button,
+                'location': location
             }
             
             self._send_raw(button_press_msg)
