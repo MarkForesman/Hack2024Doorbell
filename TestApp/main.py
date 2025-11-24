@@ -14,7 +14,6 @@ print("start")
 device_id = os.getenv("DEVICE_ID")
 device_mode = os.getenv("DEVICE_MODE")
 #from picamera2 import Picamera2
-print(connection_string)
 print(device_mode)
 #set red,green and blue pins
 redPin1 = 2
