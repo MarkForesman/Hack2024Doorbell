@@ -176,25 +176,30 @@ class OrchestratorServer:
             doorbell_states[location]['pressed'] = True
             doorbell_states[location]['confirmed'] = False
             
-            logger.info(f"Broadcasting LED update to Doorbell devices (flashing red)")
-            # Set doorbell LED to flashing red (handled by device)
-            self.broadcast_led_update(device_id, "Doorbell", {
-                'button': button,
-                'red': 1,
-                'green': 0,
-                'blue': 0,
-                'flash': True
-            })
+            # Broadcast LED updates in a separate thread to avoid blocking
+            def send_led_updates():
+                logger.info(f"Broadcasting LED update to Doorbell devices (flashing red)")
+                # Set doorbell LED to flashing red (handled by device)
+                self.broadcast_led_update(device_id, "Doorbell", {
+                    'button': button,
+                    'red': 1,
+                    'green': 0,
+                    'blue': 0,
+                    'flash': True
+                })
+                
+                logger.info(f"Broadcasting LED update to Signaler devices (red solid)")
+                # Notify signaler devices - light up corresponding LED
+                self.broadcast_led_update(None, "Signaler", {
+                    'button': 1 if location == "back_door" else 2,
+                    'red': 1,
+                    'green': 0,
+                    'blue': 0,
+                    'reset_after': 500
+                })
             
-            logger.info(f"Broadcasting LED update to Signaler devices (red solid)")
-            # Notify signaler devices - light up corresponding LED
-            self.broadcast_led_update(None, "Signaler", {
-                'button': 1 if location == "back_door" else 2,
-                'red': 1,
-                'green': 0,
-                'blue': 0,
-                'reset_after': 500
-            })
+            # Start the broadcast in a separate thread
+            threading.Thread(target=send_led_updates, daemon=True).start()
         
         elif device_type == "Signaler":
             logger.info(f"Signaler button press at {location} - handling as pickup confirmation")
@@ -206,33 +211,51 @@ class OrchestratorServer:
     
     def handle_pickup_confirmation(self, data: dict):
         """Handle package pickup confirmation"""
-        location = data.get('location', 'front_door')
-        
-        logger.info(f"Package picked up at {location}")
-        
-        # Update state
-        doorbell_states[location]['confirmed'] = True
-        doorbell_states[location]['pressed'] = False
-        
-        # Turn off flashing on doorbell, set to green
-        self.broadcast_led_update(None, "Doorbell", {
-            'button': 1,
-            'red': 0,
-            'green': 1,
-            'blue': 0,
-            'flash': False,
-            'reset_after': 60
-        })
-        
-        # Set signaler LED to green
-        button_num = 1 if location == "back_door" else 2
-        self.broadcast_led_update(None, "Signaler", {
-            'button': button_num,
-            'red': 0,
-            'green': 1,
-            'blue': 0,
-            'reset_after': 25
-        })
+        try:
+            location = data.get('location', 'front_door')
+            
+            logger.info(f"Package picked up at {location}")
+            
+            # Update state
+            doorbell_states[location]['confirmed'] = True
+            doorbell_states[location]['pressed'] = False
+            
+            # Broadcast LED updates in a separate thread to avoid blocking
+            def send_led_updates():
+                try:
+                    logger.info(f"LED broadcast thread started")
+                    logger.info(f"Broadcasting green LED to Doorbell devices...")
+                    # Turn off flashing on doorbell, set to green
+                    self.broadcast_led_update(None, "Doorbell", {
+                        'button': 1,
+                        'red': 0,
+                        'green': 1,
+                        'blue': 0,
+                        'flash': False,
+                        'reset_after': 60
+                    })
+                    
+                    logger.info(f"Broadcasting green LED to Signaler devices...")
+                    # Set signaler LED to green
+                    button_num = 1 if location == "back_door" else 2
+                    self.broadcast_led_update(None, "Signaler", {
+                        'button': button_num,
+                        'red': 0,
+                        'green': 1,
+                        'blue': 0,
+                        'reset_after': 25
+                    })
+                    logger.info(f"Pickup confirmation handling complete")
+                except Exception as e:
+                    logger.error(f"Error in LED broadcast thread: {e}", exc_info=True)
+            
+            # Start the broadcast in a separate thread
+            logger.info(f"Starting LED broadcast thread...")
+            t = threading.Thread(target=send_led_updates, daemon=True)
+            t.start()
+            logger.info(f"LED broadcast thread started: {t.name}")
+        except Exception as e:
+            logger.error(f"Error in handle_pickup_confirmation: {e}", exc_info=True)
     
     def handle_image_metadata(self, data: dict):
         """Handle image upload metadata from label scanner"""
@@ -254,10 +277,16 @@ class OrchestratorServer:
         # Get list of target devices first, then send outside lock
         targets = []
         with lock:
+            logger.info(f"Looking for devices of type '{target_device_type}' (exclude: {exclude_device_id})")
+            logger.info(f"Connected clients: {list(connected_clients.keys())}")
             for device_id, info in connected_clients.items():
+                logger.info(f"  Device {device_id}: type={info['device_type']}")
                 if info['device_type'] == target_device_type:
                     if exclude_device_id is None or device_id != exclude_device_id:
                         targets.append((device_id, info['socket']))
+                        logger.info(f"  -> Adding {device_id} to broadcast list")
+        
+        logger.info(f"Broadcasting to {len(targets)} device(s)")
         
         # Send to each target
         for device_id, client_socket in targets:
