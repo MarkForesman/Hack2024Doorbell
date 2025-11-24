@@ -207,6 +207,7 @@ class OrchestratorServer:
         doorbell_states[location]['confirmed'] = True
         doorbell_states[location]['pressed'] = False
         
+        logger.info(f"Broadcasting green LED to Doorbell devices...")
         # Turn off flashing on doorbell, set to green
         self.broadcast_led_update(None, "Doorbell", {
             'button': 1,
@@ -217,6 +218,7 @@ class OrchestratorServer:
             'reset_after': 60
         })
         
+        logger.info(f"Broadcasting green LED to Signaler devices...")
         # Set signaler LED to green
         button_num = 1 if location == "back_door" else 2
         self.broadcast_led_update(None, "Signaler", {
@@ -226,6 +228,7 @@ class OrchestratorServer:
             'blue': 0,
             'reset_after': 25
         })
+        logger.info(f"Pickup confirmation handling complete")
     
     def handle_image_metadata(self, data: dict):
         """Handle image upload metadata from label scanner"""
@@ -239,16 +242,26 @@ class OrchestratorServer:
     
     def broadcast_led_update(self, exclude_device_id: Optional[str], target_device_type: str, led_command: dict):
         """Broadcast LED update to devices of specific type"""
+        logger.info(f"Broadcast LED to {target_device_type}: {led_command}")
+        
         message = {
             'type': 'led_update',
             'command': led_command
         }
         
+        # Collect target devices first (avoid nested lock)
+        target_devices = []
         with lock:
             for device_id, info in connected_clients.items():
                 if info['device_type'] == target_device_type:
                     if exclude_device_id is None or device_id != exclude_device_id:
-                        self.send_to_device(device_id, message)
+                        target_devices.append(device_id)
+        
+        logger.info(f"Found {len(target_devices)} {target_device_type} devices: {target_devices}")
+        
+        # Send to devices (without holding lock)
+        for device_id in target_devices:
+            self.send_to_device(device_id, message)
     
     def send_to_device(self, device_id: str, message: dict):
         """Send message to a specific device"""
@@ -262,7 +275,7 @@ class OrchestratorServer:
         try:
             message_str = json.dumps(message) + '\n'
             client_socket.sendall(message_str.encode('utf-8'))
-            logger.debug(f"Sent to {device_id}: {message}")
+            logger.info(f"Sent to {device_id}: {message}")
         except Exception as e:
             logger.error(f"Error sending to {device_id}: {e}")
     

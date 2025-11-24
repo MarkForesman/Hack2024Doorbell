@@ -60,7 +60,11 @@ class Doorbell:
             if flash:
                 self.update_color_flash(True)
             else:
+                # Stop flashing first
                 self.update_color_flash(False)
+                # Then set the new color
+                import time
+                time.sleep(0.1)  # Give the flash process time to terminate
                 if reset_after > 0:
                     self.update_color(button, red, green, blue, reset_after)
                 else:

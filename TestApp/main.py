@@ -111,16 +111,24 @@ def updateColor(button_num, red, green, blue, reset_after=0):
 t1 = None
 on = False
 def updateColorFlash(_on):
-    global on
+    global on, t1
     on = _on
-    print(on)
+    print(f"updateColorFlash called with: {on}")
     if on:
-        t1 = multiprocessing.Process(target=blink(), args=())
-        t1.start()
+        if t1 is None or not t1.is_alive():
+            t1 = multiprocessing.Process(target=blink, args=())
+            t1.start()
+            print("Started blinking process")
     else:
+        print("Stopping flash...")
+        if t1 is not None and t1.is_alive():
+            t1.terminate()
+            t1.join(timeout=1)
+            print("Blinking process terminated")
         t1 = None
-        updateColor(1,0,1,0,60)
-        updateColor(2,0,1,0,60)
+        # Turn off LEDs after stopping flash
+        updateColor(1, 0, 0, 0)
+        updateColor(2, 0, 0, 0)
    
 def blink():
     global on
