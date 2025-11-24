@@ -6,13 +6,12 @@ from time import sleep
 import multiprocessing
 import os
 from dotenv import load_dotenv
-from iothub import IoTHub
 load_dotenv(override=True)
 
 print("start")
 
-# Define connection string for your device
-connection_string = os.getenv("IOT_CONNECTION_STRING")
+# Define device configuration
+device_id = os.getenv("DEVICE_ID")
 device_mode = os.getenv("DEVICE_MODE")
 #from picamera2 import Picamera2
 print(connection_string)
@@ -150,16 +149,25 @@ def blink():
 
 init_GPIO()
 device = None
-iothub = IoTHub()
+client = None
+try:
+    from tcp_client import TcpClient
+    client = TcpClient()
+except Exception as e:
+    print(f"Failed to initialize TCP client: {e}")
+    print("Exiting...")
+    import sys
+    sys.exit(1)
+
 if device_mode == "Signaler":
     from signaler import Signaler
-    device = Signaler(iothub, updateColor)
+    device = Signaler(client, updateColor)
 elif device_mode == "Doorbell":
     from doorbell import Doorbell
-    device = Doorbell(iothub, updateColor,updateColorFlash)
+    device = Doorbell(client, updateColor,updateColorFlash)
 elif device_mode == "LabelScanner":
     from label_scanner import Scanner
-    device = Scanner(iothub, updateColor)
+    device = Scanner(client, updateColor)
 
 
 #button1.when_pressed = device.button_1_press
