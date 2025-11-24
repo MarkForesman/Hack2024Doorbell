@@ -240,7 +240,7 @@ while True:
     if count > 1000:
         hostname = "google.com" #example
         response = os.system(f"ping -n -c 1 {hostname}")
-        print(response)
+        #print(response)
 
         if response == 0:
             print(f"{hostname} is up!")
