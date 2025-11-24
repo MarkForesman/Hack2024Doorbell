@@ -1,6 +1,3 @@
-azure-eventhub==5.12.1
-azure-iot-device==2.14.0
 python-dotenv==1.0.1
 RPi.GPIO
 pydantic==2.9.2
-azure-storage-blob==12.23.0
