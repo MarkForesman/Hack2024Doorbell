@@ -8,6 +8,11 @@ patches:
         value:
            name: DEVICE_MODE
            value: "Signaler"
+      - op: add
+        path: "/spec/template/spec/containers/0/env/-"
+        value:
+           name: DEVICE_ID
+           value: "device-108"
     target:
       kind: Deployment
       namespace: workloads
