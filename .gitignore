@@ -174,3 +174,8 @@ __blobstorage__
 #.idea/
 
 kubectl.exe
+Doorbell/build_deploy.sh
+Doorbell/build_deploy.sh
+*.sh
+Orchestrator/build_deploy.sh
+device_setup.md

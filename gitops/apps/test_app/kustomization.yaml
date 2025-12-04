@@ -1,5 +1,0 @@
-resources:
-  - namespace.yaml
-  - deployment.yaml
-
-namespace: workloads

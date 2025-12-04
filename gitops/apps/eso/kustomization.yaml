@@ -1,7 +1,0 @@
-resources:
-  - cluster-secret-store.yaml
-  - cluster-external-secret.yaml
-  - configmap-docker-config-json.yaml
-
-# This namespace is created when ESO is installed on the cluster in the device onboarding script
-namespace: external-secrets

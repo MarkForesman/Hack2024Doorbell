@@ -1,6 +1,5 @@
 resources:
   - namespace.yaml
   - deployment.yaml
-  - external-secret.yaml
 
 namespace: workloads

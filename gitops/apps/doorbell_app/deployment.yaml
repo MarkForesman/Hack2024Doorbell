@@ -21,13 +21,8 @@ spec:
           env:
             - name: LD_LIBRARY_PATH
               value: /opt/vc/lib
-            - name: IOT_CONNECTION_STRING
-              valueFrom:
-                secretKeyRef:
-                  name: device-iot-hub-conn-str
-                  key: iot-hub-connection-string
 
-          image: acrdoorbell.azurecr.io/testapp2:latest
+          image: houfacility.azurecr.io/doorbell_wl:latest
           imagePullPolicy: Always
           resources:
             requests:
@@ -50,6 +45,5 @@ spec:
         - name: sys
           hostPath:
             path: /sys
-
       imagePullSecrets:
         - name: acr-pull

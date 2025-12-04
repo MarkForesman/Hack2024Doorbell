@@ -2,10 +2,10 @@
 
 FROM debian:bullseye
 
-RUN apt update && apt install -y --no-install-recommends gnupg
+RUN apt update && apt install -y --no-install-recommends ca-certificates gnupg wget curl
 
-RUN echo "deb http://archive.raspberrypi.org/debian/ bullseye main" > /etc/apt/sources.list.d/raspi.list \
-  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+RUN curl -fsSL https://archive.raspberrypi.com/debian/raspberrypi.gpg.key | gpg --dearmor -o /usr/share/keyrings/raspberrypi-archive-keyring.gpg \
+  && echo "deb [signed-by=/usr/share/keyrings/raspberrypi-archive-keyring.gpg] http://archive.raspberrypi.com/debian/ bullseye main" > /etc/apt/sources.list.d/raspi.list
 
 RUN apt update && apt -y upgrade
 
@@ -35,6 +35,7 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip setuptools
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV ORCHESTRATOR_HOST=topaz2-nuc-8.local
 # Copy the Python files
 COPY  . /app/
 

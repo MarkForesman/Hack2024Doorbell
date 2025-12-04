@@ -1,6 +1,5 @@
 resources:
   - ./../../apps/doorbell_app
-  - ./../../apps/eso
 #front door
 patches:
   - patch: |-
@@ -13,10 +12,3 @@ patches:
       kind: Deployment
       namespace: workloads
       name: doorbell-app
-  - patch: |-
-      - op: replace
-        path: "/spec/data/0/remoteRef/key"
-        value: secret/device-101-iot-hub-connection-string
-    target:
-      kind: ExternalSecret
-      name: device-iothub-external-secret
