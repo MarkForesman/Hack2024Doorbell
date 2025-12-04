@@ -15,6 +15,8 @@ RUN apt update && apt install -y --no-install-recommends \
          python3-dev \
          libffi-dev gcc \
          iputils-ping \
+         avahi-daemon \
+         libnss-mdns \
      && apt-get clean \
      && apt-get autoremove \
      && rm -rf /var/cache/apt/archives/* \
@@ -35,9 +37,12 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip setuptools
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENV ORCHESTRATOR_HOST=topaz2-nuc-8.local
+ENV ORCHESTRATOR_HOST=10.0.2.13
 # Copy the Python files
 COPY  . /app/
 
+# Make the startup script executable
+RUN chmod +x /app/resolve_hostname.sh
+
 # Set the entry point
-CMD ["python3", "/app/main.py"]
+CMD ["/app/resolve_hostname.sh"]

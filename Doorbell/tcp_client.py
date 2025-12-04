@@ -36,11 +36,14 @@ class TcpClient:
         
     def _connect(self):
         """Establish connection to orchestrator"""
-        max_retries = 5
         retry_delay = 2
+        max_retry_delay = 30
+        attempt = 0
         
-        for attempt in range(max_retries):
+        while True:
+            attempt += 1
             try:
+                print(f"Attempting to connect to orchestrator at {self.orchestrator_host}:{self.orchestrator_port} (attempt {attempt})")
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.connect((self.orchestrator_host, self.orchestrator_port))
                 self._connected = True
@@ -57,12 +60,10 @@ class TcpClient:
                 return
                 
             except Exception as e:
-                print(f"Connection attempt {attempt + 1} failed: {e}")
-                if attempt < max_retries - 1:
-                    time.sleep(retry_delay)
-                else:
-                    print(f"Failed to connect after {max_retries} attempts")
-                    raise
+                print(f"Connection attempt {attempt} failed: {e}")
+                current_delay = min(retry_delay * (1.5 ** (attempt - 1)), max_retry_delay)
+                print(f"Retrying in {current_delay:.1f} seconds...")
+                time.sleep(current_delay)
     
     def _register(self):
         """Register this device with the orchestrator"""

@@ -39,6 +39,9 @@ spec:
             - name: sys
               mountPath: /sys
               readOnly: true
+            - name: avahi-socket
+              mountPath: /var/run/avahi-daemon/socket
+              readOnly: true
       volumes:
         - name: udev
           hostPath:
@@ -46,5 +49,9 @@ spec:
         - name: sys
           hostPath:
             path: /sys
+        - name: avahi-socket
+          hostPath:
+            path: /var/run/avahi-daemon/socket
+            type: Socket
       imagePullSecrets:
         - name: acr-pull
