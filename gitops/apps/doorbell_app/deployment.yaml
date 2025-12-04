@@ -13,6 +13,7 @@ spec:
       labels:
         app: doorbell-app
     spec:
+      hostNetwork: true
       containers:
         - name: doorbell-app-container
           securityContext:
